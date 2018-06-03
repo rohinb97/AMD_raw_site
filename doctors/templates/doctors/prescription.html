@@ -1,0 +1,52 @@
+<p>
+	Select available medicines to prescribe from the menu:
+</p>
+<form>
+	{% csrf_token %}
+	<!--
+	<select multiple>
+		<option>Option1</option>
+		<option>Option2</option>
+	</select>
+	<br> 
+	-->
+	<select id="medicine_list" multiple>
+		{% for med in medicines %}
+		<option value="medicine{{forloop.counter}}"> {{med.MedName}} </option>
+		{% endfor %}
+	</select>
+	<br>
+	<br>
+	Quantity: <input type="text" id="Quantity">
+	<br>
+	<br>
+	<br>
+	Selections: <textarea id="selections" readonly="true" rows="5"></textarea>
+	<br>
+	<button onclick=" document.getElementById('selections').value=''; "> Clear selections </button>
+	<br>
+	<br>
+	<br>
+	<br>
+	<button onclick="
+	var quantity = document.getElementById('Quantity').value;
+	var text='';
+	qrCode = document.createElement('IMG');
+	qrCode.src = 'http://api.qrserver.com/v1/create-qr-code/?data='+quantity
+	for(var i=0;i<document.getElementById('medicine_list').selectedOptions.length;i++){
+		var med = document.getElementById('medicine_list').selectedOptions[i].innerText;
+		text += med +'*'+quantity+'\n'
+		qrCode.src += '_'+med;
+	}
+	document.write(text)    
+    qrCode.src +='&size=200x200'
+    document.body.appendChild(qrCode)
+	
+	">Add option to selection</button>
+
+	<br>
+	<br>
+</form>
+<form action="/doctors/getQRCode/" method="post">
+	<input type="submit" value="Generate Prescription">
+</form> 
